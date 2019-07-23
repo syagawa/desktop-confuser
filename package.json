@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "screenshot-desktop": "^1.8.0"
+    "screenshot-desktop": "^1.8.0",
+    "wallpaper": "^4.4.1"
   }
 }
