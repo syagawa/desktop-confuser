@@ -27,11 +27,14 @@ function setWallPaper(imgname){
 
 }
 
+setInterval(function() {
+  console.log("shot");
+  takeScreenShot()
+    .then(function(iname){
+      setWallPaper(iname);
+    })
+    .catch(function(err){
 
-takeScreenShot()
-  .then(function(iname){
-    setWallPaper(iname);
-  })
-  .catch(function(err){
+    });
+}, 1000);
 
-  });
