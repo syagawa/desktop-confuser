@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "log4js": "^4.5.1",
     "screenshot-desktop": "^1.8.0",
     "wallpaper": "^4.4.1"
   }
