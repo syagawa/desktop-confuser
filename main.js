@@ -34,7 +34,21 @@ function setWallPaper(imgname){
 
 }
 
+function saveWallPaper(){
+  return wallpaper.get()
+          .then(function(p){
+            if(p){
+              logger.info("COPY Wallpaper: " + p);
+              fs.copyFileSync(p, "temp");
+            }
+          })
+          .catch(function(err){
+
+          });
+}
+
 function run(){
+
   setWallPaper("./default_snap.jpg")
     .then(function(){
     });
