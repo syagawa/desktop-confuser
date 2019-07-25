@@ -24,7 +24,7 @@ function takeScreenShot(){
 
 
 function setWallPaper(imgname){
-  wallpaper.set(imgname)
+  return wallpaper.set(imgname)
     .then(function(res){
       logger.info(`SET ${imgname}`);
     })
@@ -35,7 +35,9 @@ function setWallPaper(imgname){
 }
 
 function run(){
-  setWallPaper("./default_snap.jpg");
+  setWallPaper("./default_snap.jpg")
+    .then(function(){
+    });
 
   setInterval(function() {
     takeScreenShot()
