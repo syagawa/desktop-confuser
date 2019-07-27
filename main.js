@@ -2,12 +2,15 @@ const screenshot = require("screenshot-desktop");
 const wallpaper = require("wallpaper");
 const fs = require("fs");
 const log4js = require("log4js");
+const ctrlcoff = require("ctrl-c");
 
 const appname = "desktop-confuser";
 
 const logger = log4js.getLogger(appname);
 logger.level = "debug";
 logger.info("START!!");
+
+let initialWPPath = "";
 
 
 function takeScreenShot(){
@@ -47,7 +50,46 @@ function saveWallPaper(){
           });
 }
 
+function saveWallPaperPath(){
+  return wallpaper.get()
+          .then(function(p){
+            if(p){
+              logger.info("Wallpaper Path: " + p);
+              initialWPPath = p;
+            }
+          })
+          .catch(function(err){
+
+          });
+}
+
+
+function disableCtrlC(){
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.on("keypress", function(chunk, key) {
+    if(key && key.name === "c" && key.ctrl) {
+      logger.info("Pressed Ctrl + C");
+      beforeExit();
+    }
+  });
+  ctrlcoff(true);
+}
+
+function beforeExit(){
+  setWallPaper(initialWPPath)
+    .then(function(){
+      logger.info("Process killed");
+      process.exit();
+    });
+}
+
 function run(){
+
+  disableCtrlC();
+  process.on("exit", beforeExit);
+
+  saveWallPaperPath();
 
   setWallPaper("./default_snap.jpg")
     .then(function(){
