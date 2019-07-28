@@ -3,6 +3,12 @@ const wallpaper = require("wallpaper");
 const fs = require("fs");
 const log4js = require("log4js");
 const ctrlcoff = require("ctrl-c");
+const tty = require("tty");
+
+console.log(tty);
+console.log(process.stdin.ReadStream);
+console.log(tty.ReadStream.setRawMode);
+console.log(process.stdout.isTTY);
 
 const appname = "desktop-confuser";
 
@@ -65,7 +71,9 @@ function saveWallPaperPath(){
 
 
 function disableCtrlC(){
-  process.stdin.setRawMode(true);
+  if(process.stdin.setRawMode){
+    process.stdin.setRawMode(true);
+  }
   process.stdin.resume();
   process.stdin.on("keypress", function(chunk, key) {
     if(key && key.name === "c" && key.ctrl) {
