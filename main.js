@@ -4,11 +4,7 @@ const fs = require("fs");
 const log4js = require("log4js");
 const ctrlcoff = require("ctrl-c");
 const tty = require("tty");
-
-console.log(tty);
-console.log(process.stdin.ReadStream);
-console.log(tty.ReadStream.setRawMode);
-console.log(process.stdout.isTTY);
+const readline = require("readline");
 
 const appname = "desktop-confuser";
 
@@ -69,6 +65,21 @@ function saveWallPaperPath(){
           });
 }
 
+function startReadLine(){
+  process.stdin.setEncoding('utf8');
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.on("line", function(d){
+    if(d === "end" || d === "kill" || d === "exit"){
+      exitProgram();
+    }
+  });
+
+}
 
 function disableCtrlC(){
   if(process.stdin.setRawMode){
@@ -78,13 +89,13 @@ function disableCtrlC(){
   process.stdin.on("keypress", function(chunk, key) {
     if(key && key.name === "c" && key.ctrl) {
       logger.info("Pressed Ctrl + C");
-      beforeExit();
+      exitProgram();
     }
   });
   ctrlcoff(true);
 }
 
-function beforeExit(){
+function exitProgram(){
   setWallPaper(initialWPPath)
     .then(function(){
       logger.info("Process killed");
@@ -94,8 +105,9 @@ function beforeExit(){
 
 function run(){
 
+  startReadLine();
   disableCtrlC();
-  process.on("exit", beforeExit);
+  process.on("exit", exitProgram);
 
   saveWallPaperPath();
 
