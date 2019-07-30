@@ -1,12 +1,18 @@
 const screenshot = require("screenshot-desktop");
 const wallpaper = require("wallpaper");
 const fs = require("fs");
+const argv = requirea("yargs").argv;
 const log4js = require("log4js");
 const ctrlcoff = require("ctrl-c");
 const tty = require("tty");
 const readline = require("readline");
 
 const appname = "desktop-confuser";
+
+let mode = "shot";
+if(argv.mode === "images" || argv.images){
+  mode = "images";
+}
 
 const logger = log4js.getLogger(appname);
 logger.level = "debug";
