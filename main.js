@@ -1,7 +1,7 @@
 const screenshot = require("screenshot-desktop");
 const wallpaper = require("wallpaper");
 const fs = require("fs");
-const argv = requirea("yargs").argv;
+const argv = require("yargs").argv;
 const log4js = require("log4js");
 const ctrlcoff = require("ctrl-c");
 const tty = require("tty");
@@ -9,22 +9,30 @@ const readline = require("readline");
 
 const appname = "desktop-confuser";
 
-let mode = "shot";
-if(argv.mode === "images" || argv.images){
-  mode = "images";
-}
+const g = {
+  argv: argv,
+  get mode(){
+    if(this.argv.mode === "images" || this.argv.images){
+      return "images";
+    }else{
+      return "shot"
+    }
+  },
+  get interval(){
+    const v = 1000;
+    if(this.argv.interval){
+      return Number(this.argv.interval) ? Number(this.argv.interval) : v;
+    }else{
+      return v;
+    }
+  },
+  initialWPPath: ""
+};
 
-let interval = 1000;
-if(argv.interval){
-  const mseconds = Number(argv.interval) ? Number(argv.interval) : interval;
-  interval = mseconds;
-}
 
 const logger = log4js.getLogger(appname);
 logger.level = "debug";
 logger.info("START!!");
-
-let initialWPPath = "";
 
 
 
@@ -70,7 +78,7 @@ function saveWallPaperPath(){
           .then(function(p){
             if(p){
               logger.info("Wallpaper Path: " + p);
-              initialWPPath = p;
+              g.initialWPPath = p;
             }
           })
           .catch(function(err){
@@ -109,7 +117,7 @@ function disableCtrlC(){
 }
 
 function exitProgram(){
-  setWallPaper(initialWPPath)
+  setWallPaper(g.initialWPPath)
     .then(function(){
       logger.info("Process killed");
       process.exit();
@@ -132,7 +140,7 @@ function runShotAndSet(){
       .catch(function(err){
 
       });
-  }, interval);
+  }, g.interval);
 }
 
 function run(){
