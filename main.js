@@ -14,11 +14,18 @@ if(argv.mode === "images" || argv.images){
   mode = "images";
 }
 
+let interval = 1000;
+if(argv.interval){
+  const mseconds = Number(argv.interval) ? Number(argv.interval) : interval;
+  interval = mseconds;
+}
+
 const logger = log4js.getLogger(appname);
 logger.level = "debug";
 logger.info("START!!");
 
 let initialWPPath = "";
+
 
 
 function takeScreenShot(){
@@ -109,12 +116,7 @@ function exitProgram(){
     });
 }
 
-function run(){
-
-  startReadLine();
-  disableCtrlC();
-  process.on("exit", exitProgram);
-
+function runShotAndSet(){
   saveWallPaperPath();
 
   setWallPaper("./default_snap.jpg")
@@ -130,7 +132,17 @@ function run(){
       .catch(function(err){
 
       });
-  }, 1000);
+  }, interval);
+}
+
+function run(){
+
+  startReadLine();
+  disableCtrlC();
+  process.on("exit", exitProgram);
+
+  runShotAndSet();
+
 }
 
 module.exports = run;
