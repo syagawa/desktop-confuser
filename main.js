@@ -26,20 +26,19 @@ const g = {
       return v;
     }
   },
-  initialWPPath: ""
+  initialWPPath: "",
+  default_snapshot_image_name: "./default_snap.jpg",
+  temp_snapshot_image_name: "./_snap.jpg"
 };
-
 
 const logger = log4js.getLogger(appname);
 logger.level = "debug";
 logger.info("START!!");
 
-
-
 function takeScreenShot(){
   return screenshot()
     .then(function(img){
-      const filename = "./snap.jpg";
+      const filename = g.temp_snapshot_image_name;
       fs.writeFileSync(filename, img);
       return filename;
     })
@@ -57,7 +56,6 @@ function setWallPaper(imgname){
     .catch(function(err){
 
     });
-
 }
 
 function saveWallPaper(){
@@ -127,7 +125,7 @@ function exitProgram(){
 function runShotAndSet(){
   saveWallPaperPath();
 
-  setWallPaper("./default_snap.jpg")
+  setWallPaper(g.default_snapshot_image_name)
     .then(function(){
     });
 
