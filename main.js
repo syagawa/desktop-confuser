@@ -6,6 +6,7 @@ const log4js = require("log4js");
 const ctrlcoff = require("ctrl-c");
 const tty = require("tty");
 const readline = require("readline");
+const path = require("path");
 
 const appname = "desktop-confuser";
 
@@ -26,9 +27,17 @@ const g = {
       return v;
     }
   },
+  get images_path(){
+    if(this.argv.imagespath){
+      return this.argv.imagespath;
+    }else{
+      return "./images";
+    }
+  },
   initialWPPath: "",
   default_snapshot_image_name: "./default_snap.jpg",
-  temp_snapshot_image_name: "./_snap.jpg"
+  temp_snapshot_image_name: "./_snap.jpg",
+  images: []
 };
 
 const logger = log4js.getLogger(appname);
@@ -141,14 +150,43 @@ function runShotAndSet(){
   }, g.interval);
 }
 
+function runSet(p){
+  saveWallPaperPath();
+  const files = fs.readdirSync(p);
+  files.forEach(function(elm){
+    const file = path.join(p, elm);
+    if(fs.statSync(file).isFile()){
+      g.images.push(file);
+    }
+  });
+  console.log(g.images);
+
+
+  let i = 0;
+  const len = g.images.length;
+  setInterval(function() {
+    setWallPaper(g.images[i]);
+    logger.info(`SET ${g.images[i]}`);
+    i++;
+    if( i >= len){
+      i = 0;
+    }
+  }, g.interval);
+
+
+}
+
 function run(){
 
   startReadLine();
   disableCtrlC();
   process.on("exit", exitProgram);
 
-  runShotAndSet();
-
+  if(g.mode === "images"){
+    runSet(g.images_path);
+  }else{
+    runShotAndSet();
+  }
 }
 
 module.exports = run;
