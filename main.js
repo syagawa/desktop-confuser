@@ -150,7 +150,7 @@ function runShotAndSet(){
   }, g.interval);
 }
 
-function runSet(p){
+async function runSet(p){
   saveWallPaperPath();
   const files = fs.readdirSync(p);
   files.forEach(function(elm){
@@ -164,14 +164,34 @@ function runSet(p){
 
   let i = 0;
   const len = g.images.length;
-  setInterval(function() {
-    setWallPaper(g.images[i]);
-    logger.info(`SET ${g.images[i]}`);
+  const doInterval = function(){
+    return new Promise(function(resolve, reject){
+      setInterval(function() {
+        setWallPaper(g.images[i])
+          .then(function(res){
+            resolve();
+            logger.info(`SET ${g.images[i]}`);
+          })
+      }, g.interval);
+    });
+  };
+
+  while(true){
+    await doInterval();
     i++;
     if( i >= len){
       i = 0;
     }
-  }, g.interval);
+  }
+
+  // setInterval(function() {
+  //   setWallPaper(g.images[i]);
+  //   logger.info(`SET ${g.images[i]}`);
+  //   i++;
+  //   if( i >= len){
+  //     i = 0;
+  //   }
+  // }, g.interval);
 
 
 }
