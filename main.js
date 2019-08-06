@@ -161,38 +161,32 @@ async function runSet(p){
   });
   console.log(g.images);
 
+  const sleep = function(msec){
+    return new Promise(function(resolve, reject){
+      return setTimeout(resolve, msec);
+    })
+  };
+
+  const repeater = async function(cb, interval){
+    while(true){
+      await Promise.all([cb(), sleep(interval)]);
+    }
+  };
 
   let i = 0;
   const len = g.images.length;
-  const doInterval = function(){
-    return new Promise(function(resolve, reject){
-      setInterval(function() {
-        setWallPaper(g.images[i])
-          .then(function(res){
-            resolve();
-            logger.info(`SET ${g.images[i]}`);
-          })
-      }, g.interval);
-    });
+  const doset = function(){
+    setWallPaper(g.images[i])
+      .then(function(res){
+        logger.info(`SET ${g.images[i]}`);
+        i++;
+        if( i >= len){
+          i = 0;
+        }
+      });
   };
 
-  while(true){
-    await doInterval();
-    i++;
-    if( i >= len){
-      i = 0;
-    }
-  }
-
-  // setInterval(function() {
-  //   setWallPaper(g.images[i]);
-  //   logger.info(`SET ${g.images[i]}`);
-  //   i++;
-  //   if( i >= len){
-  //     i = 0;
-  //   }
-  // }, g.interval);
-
+  repeater(doset, g.interval);
 
 }
 
