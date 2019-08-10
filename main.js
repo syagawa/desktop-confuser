@@ -176,9 +176,8 @@ async function runSet(p){
   let i = 0;
   const len = g.images.length;
   const doset = function(){
-    setWallPaper(g.images[i])
+    return setWallPaper(g.images[i])
       .then(function(res){
-        logger.info(`SET ${g.images[i]}`);
         i++;
         if( i >= len){
           i = 0;
