@@ -7,6 +7,7 @@ const ctrlcoff = require("ctrl-c");
 const tty = require("tty");
 const readline = require("readline");
 const path = require("path");
+const request = require("request");
 
 const appname = "desktop-confuser";
 
@@ -16,7 +17,7 @@ const g = {
     if(this.argv.mode === "images" || this.argv.images){
       return "images";
     }else{
-      return "shot"
+      return "shot";
     }
   },
   get interval(){
@@ -37,7 +38,8 @@ const g = {
   initialWPPath: "",
   default_snapshot_image_name: "./default_snap.jpg",
   temp_snapshot_image_name: "./_snap.jpg",
-  images: []
+  images: [],
+  image_urls: []
 };
 
 const logger = log4js.getLogger(appname);
@@ -91,6 +93,62 @@ function saveWallPaperPath(){
           .catch(function(err){
 
           });
+}
+
+function getImagesAndSave(urls){
+  const dist = "./images";
+
+  urls = [
+    "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
+    "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
+    "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971915_TP_V4.jpg"
+  ];
+
+  try{
+    fs.statSync(dist);
+  }catch(err){
+    fs.mkdirSync(dist);
+  }
+
+  const promises = [];
+
+  let counter = 0;
+  urls.forEach(function(url){
+    const p = new Promise(function(resolve, reject){
+      request(
+        {
+          method: "GET",
+          url: url,
+          encoding: null
+        },
+        function(err, res, body){
+          if(err){
+            // return;
+            reject(err);
+          }
+          if(res.statusCode !== 200){
+            // return;
+            reject();
+          }
+          counter++;
+          const filepath = path.join(dist, String(counter).padStart(5, 0) + ".jpg");
+          fs.writeFileSync(filepath, body, "binary");
+          resolve();
+        }
+      );
+     });
+    promises.push(p);
+  });
+
+  Promise.all(promises)
+    .then(function(res){
+      console.log(res);
+    })
+    .catch(function(err){
+      console.log(err);
+    });
+
+
 }
 
 function startReadLine(){
@@ -164,7 +222,7 @@ async function runSet(p){
   const sleep = function(msec){
     return new Promise(function(resolve, reject){
       return setTimeout(resolve, msec);
-    })
+    });
   };
 
   const repeater = async function(cb, interval){
@@ -200,6 +258,7 @@ function run(){
   }else{
     runShotAndSet();
   }
+  // getImagesAndSave();
 }
 
 module.exports = run;

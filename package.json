@@ -13,6 +13,7 @@
     "log4js": "^4.5.1",
     "screenshot-desktop": "^1.8.0",
     "wallpaper": "^4.4.1",
-    "yargs": "^13.3.0"
+    "yargs": "^13.3.0",
+    "request": "^2.88.0"
   }
 }
