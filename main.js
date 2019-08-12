@@ -140,15 +140,7 @@ function getImagesAndSave(urls){
     promises.push(p);
   });
 
-  Promise.all(promises)
-    .then(function(res){
-      console.log(res);
-    })
-    .catch(function(err){
-      console.log(err);
-    });
-
-
+  return Promise.all(promises);
 }
 
 function startReadLine(){
@@ -258,7 +250,12 @@ function run(){
   }else{
     runShotAndSet();
   }
-  // getImagesAndSave();
+
+  // getImagesAndSave()
+  //   .then(function(res){
+
+  //   });
+
 }
 
 module.exports = run;
