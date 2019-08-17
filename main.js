@@ -22,11 +22,20 @@ const g = {
   },
   get interval(){
     const v = 1000;
+    const min = 0;
+    const max = 10000;
+    let num = 0;
     if(this.argv.interval){
-      return Number(this.argv.interval) ? Number(this.argv.interval) : v;
+      num = Number(this.argv.interval);
     }else{
-      return v;
+      num = v;
     }
+    if(num < min){
+      num = min;
+    }else if(num > max){
+      num = max;
+    }
+    return num;
   },
   get images_path(){
     if(this.argv.imagespath){
