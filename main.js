@@ -106,7 +106,6 @@ function saveWallPaperPath(){
 
 function getImagesAndSave(urls){
   const dist = "./images";
-
   urls = [
     "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
     "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
@@ -132,11 +131,9 @@ function getImagesAndSave(urls){
         },
         function(err, res, body){
           if(err){
-            // return;
             reject(err);
           }
           if(res.statusCode !== 200){
-            // return;
             reject();
           }
           counter++;
@@ -161,7 +158,7 @@ function startReadLine(){
   });
 
   rl.on("line", function(d){
-    if(d === "end" || d === "kill" || d === "exit"){
+    if(d === "end" || d === "kill" || d === "exit" || d === "quit"){
       exitProgram();
     }
   });
