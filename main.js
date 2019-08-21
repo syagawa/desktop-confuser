@@ -11,6 +11,8 @@ const request = require("request");
 
 const appname = "desktop-confuser";
 
+console.log(argv);
+
 const g = {
   argv: argv,
   get mode(){
@@ -44,11 +46,23 @@ const g = {
       return "./images";
     }
   },
+  get image_urls(){
+    let urls = [
+      "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
+      "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
+      "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971915_TP_V4.jpg"
+    ];
+
+    if(this.argv.imageUrls){
+      urls = this.argv.imageUrls.split(",");
+    }
+    return urls;
+
+  },
   initialWPPath: "",
   default_snapshot_image_name: "./default_snap.jpg",
   temp_snapshot_image_name: "./_snap.jpg",
-  images: [],
-  image_urls: []
+  images: []
 };
 
 const logger = log4js.getLogger(appname);
@@ -106,11 +120,13 @@ function saveWallPaperPath(){
 
 function getImagesAndSave(urls){
   const dist = "./images";
-  urls = [
-    "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
-    "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
-    "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971915_TP_V4.jpg"
-  ];
+  // urls = [
+  //   "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
+  //   "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
+  //   "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971915_TP_V4.jpg"
+  // ];
+
+  urls = g.image_urls;
 
   try{
     fs.statSync(dist);
