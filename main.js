@@ -57,7 +57,6 @@ const g = {
       urls = this.argv.imageUrls.split(",");
     }
     return urls;
-
   },
   initialWPPath: "",
   default_snapshot_image_name: "./default_snap.jpg",
@@ -120,11 +119,6 @@ function saveWallPaperPath(){
 
 function getImagesAndSave(urls){
   const dist = "./images";
-  // urls = [
-  //   "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
-  //   "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
-  //   "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971915_TP_V4.jpg"
-  // ];
 
   urls = g.image_urls;
 
@@ -146,16 +140,17 @@ function getImagesAndSave(urls){
           encoding: null
         },
         function(err, res, body){
+          console.log(res, body);
           if(err){
             reject(err);
           }
           if(res.statusCode !== 200){
-            reject();
+            reject("Can't get image");
           }
           counter++;
           const filepath = path.join(dist, String(counter).padStart(5, 0) + ".jpg");
           fs.writeFileSync(filepath, body, "binary");
-          resolve();
+          resolve(filepath);
         }
       );
      });
@@ -275,7 +270,7 @@ function run(){
 
   // getImagesAndSave()
   //   .then(function(res){
-
+  //     console.log(res);
   //   });
 
 }
