@@ -217,9 +217,32 @@ function runShotAndSet(){
   }, g.interval);
 }
 
+function readdirAsync(p){
+  return new Promise(function(resolve, reject){
+    return fs.readdir(p, function(err, filenames){
+      if(err){
+        return reject(err);
+      }else{
+        return resolve(filenames);
+      }
+    });
+  });
+}
+
 async function runSet(p){
   saveWallPaperPath();
-  const files = fs.readdirSync(p);
+  const files = await readdirAsync(p)
+    .then(function(res){
+      return res;
+    })
+    .catch(function(err){
+      console.log(err);
+      exitProgram();
+
+    });
+    console.log(2, files);
+
+
   files.forEach(function(elm){
     const file = path.join(p, elm);
     if(fs.statSync(file).isFile()){
