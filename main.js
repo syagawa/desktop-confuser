@@ -258,7 +258,8 @@ async function runSet(p){
   };
 
   const repeater = async function(cb, interval){
-    while(true){
+    let bool = true;
+    while(bool){
       await Promise.all([cb(), sleep(interval)]);
     }
   };
