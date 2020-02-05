@@ -279,7 +279,7 @@ async function runSet(p){
 
 }
 
-function run(){
+async function run(){
 
   startReadLine();
   disableCtrlC();
@@ -288,11 +288,12 @@ function run(){
   if(g.mode === "images"){
     runSet(g.images_path);
   }else if(g.mode === "get"){
-    getImagesAndSave()
+    const images = await getImagesAndSave()
       .then(function(res){
-        console.log(res);
+        // console.log(res);
+        return res;
       });
-
+    runSet(g.images_path);
   }else{
     runShotAndSet();
   }
