@@ -8,6 +8,7 @@ const tty = require("tty");
 const readline = require("readline");
 const path = require("path");
 const request = require("request");
+const settings = require("./settings.js");
 
 const appname = "desktop-confuser";
 
@@ -47,11 +48,7 @@ const g = {
     }
   },
   get image_urls(){
-    let urls = [
-      "https://www.pakutaso.com/shared/img/thumb/TS1261_TP_V4.jpg",
-      "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971947_TP_V4.jpg",
-      "https://www.pakutaso.com/shared/img/thumb/yuseiookawa1971915_TP_V4.jpg"
-    ];
+    let urls = settings.urls;
 
     if(this.argv.imageUrls){
       urls = this.argv.imageUrls.split(",");
