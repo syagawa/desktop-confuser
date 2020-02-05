@@ -19,6 +19,8 @@ const g = {
   get mode(){
     if(this.argv.mode === "images" || this.argv.images){
       return "images";
+    }else if(this.argv.mode === "get" || this.argv.get){
+      return "get";
     }else{
       return "shot";
     }
@@ -285,15 +287,15 @@ function run(){
 
   if(g.mode === "images"){
     runSet(g.images_path);
+  }else if(g.mode === "get"){
+    getImagesAndSave()
+      .then(function(res){
+        console.log(res);
+      });
+
   }else{
     runShotAndSet();
   }
-
-  // getImagesAndSave()
-  //   .then(function(res){
-  //     console.log(res);
-  //   });
-
 }
 
 module.exports = run;
