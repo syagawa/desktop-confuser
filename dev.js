@@ -1,2 +1,5 @@
 const dc = require("./main.js");
-dc();
+
+dc.logger.info("START!!");
+
+dc.run();

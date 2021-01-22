@@ -12,7 +12,10 @@ const settings = require("./settings.js");
 
 const appname = "desktop-confuser";
 
+let runable = false;
+
 console.log(argv);
+
 
 const g = {
   argv: argv,
@@ -65,7 +68,6 @@ const g = {
 
 const logger = log4js.getLogger(appname);
 logger.level = "debug";
-logger.info("START!!");
 
 function takeScreenShot(){
   return screenshot()
@@ -92,34 +94,36 @@ function setWallPaper(imgname){
 
 function saveWallPaper(){
   return wallpaper.get()
+          .catch(function(err){
+            logger.error("error " + err);
+          })
           .then(function(p){
             if(p){
               logger.info("COPY Wallpaper: " + p);
               fs.copyFileSync(p, "temp");
             }
-          })
-          .catch(function(err){
-
           });
 }
 
 function saveWallPaperPath(){
   return wallpaper.get()
+          .catch(function(err){
+            logger.error("error " + err);
+          })
           .then(function(p){
             if(p){
               logger.info("Wallpaper Path: " + p);
               g.initialWPPath = p;
             }
-          })
-          .catch(function(err){
-
           });
 }
 
 function getImagesAndSave(urls){
   const dist = "./images";
 
-  urls = g.image_urls;
+  if(!Array.isArray(urls) || urls.length === 0){
+    urls = g.image_urls;
+  }
 
   try{
     fs.statSync(dist);
@@ -190,11 +194,17 @@ function disableCtrlC(){
 }
 
 function exitProgram(){
-  setWallPaper(g.initialWPPath)
-    .then(function(){
-      logger.info("Process killed");
-      process.exit();
-    });
+  runable = false;
+  setTimeout(
+    function(){
+      setWallPaper(g.initialWPPath)
+        .then(function(){
+          logger.info("Process killed");
+          process.exit();
+        });
+    },
+    g.interval
+  );
 }
 
 function runShotAndSet(){
@@ -204,15 +214,20 @@ function runShotAndSet(){
     .then(function(){
     });
 
-  setInterval(function() {
-    takeScreenShot()
-      .then(function(iname){
-        setWallPaper(iname);
-        logger.info(`SHOT ${iname}`);
-      })
-      .catch(function(err){
+  runable = true;
+  const id = setInterval(function() {
+    if(runable){
+      takeScreenShot()
+        .then(function(iname){
+          setWallPaper(iname);
+          logger.info(`SHOT ${iname}`);
+        })
+        .catch(function(err){
 
-      });
+        });
+    }else{
+      return clearInterval(id);
+    }
   }, g.interval);
 }
 
@@ -229,6 +244,7 @@ function readdirAsync(p){
 }
 
 async function runSet(p){
+  runable = true;
   saveWallPaperPath();
   const files = await readdirAsync(p)
     .then(function(res){
@@ -259,6 +275,9 @@ async function runSet(p){
   const repeater = async function(cb, interval){
     let bool = true;
     while(bool){
+      if(!runable){
+        return;
+      }
       await Promise.all([cb(), sleep(interval)]);
     }
   };
@@ -299,4 +318,9 @@ async function run(){
   }
 }
 
-module.exports = run;
+module.exports = {
+  run: run,
+  logger: logger,
+  saveWallPaper: saveWallPaper,
+  saveWallPaperPath: saveWallPaperPath,
+};
