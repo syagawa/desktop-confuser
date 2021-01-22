@@ -9,14 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ctrl-c": "^2.3.1",
-    "log4js": "^6.1.1",
-    "screenshot-desktop": "^1.11.0",
-    "wallpaper": "^4.4.1",
-    "yargs": "^15.1.0",
+    "ctrl-c": "^2.3.2",
+    "log4js": "^6.3.0",
+    "screenshot-desktop": "^1.12.3",
+    "wallpaper": "^4.4.2",
+    "yargs": "^16.2.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0"
+    "eslint": "^7.18.0"
   }
 }
